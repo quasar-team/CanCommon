@@ -37,32 +37,23 @@ PYBIND11_MODULE(canmodule, m) {
   can_flags.attr("ERROR_FRAME") = CanFlags::ERROR_FRAME;
   can_flags.attr("REMOTE_REQUEST") = CanFlags::REMOTE_REQUEST;
 
-  py::module_ can_device_error =
-      m.def_submodule("CanDeviceError", "Namespace for CAN device error codes");
-  can_device_error.attr("NO_ERROR") = CanDeviceError::NO_ERROR;
-  can_device_error.attr("SUCCESS") = CanDeviceError::SUCCESS;
-  can_device_error.attr("UNKNOWN_OPEN_ERROR") =
-      CanDeviceError::UNKNOWN_OPEN_ERROR;
-  can_device_error.attr("SOCKET_ERROR") = CanDeviceError::SOCKET_ERROR;
-  can_device_error.attr("TOO_MANY_CONNECTIONS") =
-      CanDeviceError::TOO_MANY_CONNECTIONS;
-  can_device_error.attr("TIMEOUT") = CanDeviceError::TIMEOUT;
-  can_device_error.attr("NOT_CONNECTED") = CanDeviceError::NOT_CONNECTED;
-  can_device_error.attr("UNACKNOWLEDMENT") = CanDeviceError::UNACKNOWLEDMENT;
-  can_device_error.attr("INTERNAL_API_ERROR") =
-      CanDeviceError::INTERNAL_API_ERROR;
-  can_device_error.attr("UNKNOWN_SEND_ERROR") =
-      CanDeviceError::UNKNOWN_SEND_ERROR;
-  can_device_error.attr("CAN_NACK") = CanDeviceError::CAN_NACK;
-  can_device_error.attr("CAN_TX_ERROR") = CanDeviceError::CAN_TX_ERROR;
-  can_device_error.attr("CAN_TX_BUFFER_OVERFLOW") =
-      CanDeviceError::CAN_TX_BUFFER_OVERFLOW;
-  can_device_error.attr("CAN_LOST_ARBITRATION") =
-      CanDeviceError::CAN_LOST_ARBITRATION;
-  can_device_error.attr("CAN_INVALID_BITRATE") =
-      CanDeviceError::CAN_INVALID_BITRATE;
-  can_device_error.attr("UNKNOWN_CLOSE_ERROR") =
-      CanDeviceError::UNKNOWN_CLOSE_ERROR;
+  py::enum_<CanReturnCode>(m, "CanReturnCode")
+      .value("SUCCESS", CanReturnCode::SUCCESS)
+      .value("UNKNOWN_OPEN_ERROR", CanReturnCode::UNKNOWN_OPEN_ERROR)
+      .value("SOCKET_ERROR", CanReturnCode::SOCKET_ERROR)
+      .value("TOO_MANY_CONNECTIONS", CanReturnCode::TOO_MANY_CONNECTIONS)
+      .value("TIMEOUT", CanReturnCode::TIMEOUT)
+      .value("NOT_CONNECTED", CanReturnCode::NOT_CONNECTED)
+      .value("UNACKNOWLEDMENT", CanReturnCode::UNACKNOWLEDGMENT)
+      .value("INTERNAL_API_ERROR", CanReturnCode::INTERNAL_API_ERROR)
+      .value("UNKNOWN_SEND_ERROR", CanReturnCode::UNKNOWN_SEND_ERROR)
+      .value("CAN_NACK", CanReturnCode::CAN_NACK)
+      .value("CAN_TX_ERROR", CanReturnCode::CAN_TX_ERROR)
+      .value("CAN_TX_BUFFER_OVERFLOW", CanReturnCode::CAN_TX_BUFFER_OVERFLOW)
+      .value("CAN_LOST_ARBITRATION", CanReturnCode::CAN_LOST_ARBITRATION)
+      .value("CAN_INVALID_BITRATE", CanReturnCode::CAN_INVALID_BITRATE)
+      .value("UNKNOWN_CLOSE_ERROR", CanReturnCode::UNKNOWN_CLOSE_ERROR)
+      .export_values();
 
   py::class_<CanDevice>(m, "CanDevice")
       .def("open", &CanDevice::open)

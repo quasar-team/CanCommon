@@ -34,9 +34,9 @@ struct CanVendorAnagate : CanDevice {
   ~CanVendorAnagate() override { vendor_close(); }
 
  private:
-  int vendor_open() override;
-  int vendor_close() override;
-  int vendor_send(const CanFrame &frame) override;
+  CanReturnCode vendor_open() override;
+  CanReturnCode vendor_close() override;
+  CanReturnCode vendor_send(const CanFrame &frame) override;
   CanDiagnostics vendor_diagnostics() override;
 
   void print_anagate_error(AnaUInt32 r);

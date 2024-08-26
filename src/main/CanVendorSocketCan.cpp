@@ -29,7 +29,7 @@ constexpr auto LIBSOCKETCAN_SUCCESS = 0;
  *
  * @return int Returns 0 on success, or -1 on failure.
  */
-int CanVendorSocketCan::vendor_open() {
+CanReturnCode CanVendorSocketCan::vendor_open() {
   if (args().config.bitrate.has_value()) {
     LOG(Log::INF, CanLogIt::h) << "Configuring SocketCAN device";
 
@@ -37,25 +37,25 @@ int CanVendorSocketCan::vendor_open() {
         LIBSOCKETCAN_ERROR) {
       LOG(Log::ERR, CanLogIt::h) << "Failed to stop CAN bus";
 
-      return CanDeviceError::SOCKET_ERROR;
+      return CanReturnCode::SOCKET_ERROR;
     }
     if (can_set_bitrate(args().config.bus_name.value().c_str(),
                         args().config.bitrate.value()) == LIBSOCKETCAN_ERROR) {
       LOG(Log::ERR, CanLogIt::h) << "Failed to set bitrate";
 
-      return CanDeviceError::SOCKET_ERROR;
+      return CanReturnCode::SOCKET_ERROR;
     }
     if (can_set_restart_ms(args().config.bus_name.value().c_str(),
                            args().config.timeout.value_or(0)) ==
         LIBSOCKETCAN_ERROR) {
       LOG(Log::ERR, CanLogIt::h) << "Failed to set restart delay";
-      return CanDeviceError::SOCKET_ERROR;
+      return CanReturnCode::SOCKET_ERROR;
     }
     if (can_do_start(args().config.bus_name.value().c_str()) ==
         LIBSOCKETCAN_ERROR) {
       LOG(Log::ERR, CanLogIt::h) << "Failed to start CAN bus";
 
-      return CanDeviceError::SOCKET_ERROR;
+      return CanReturnCode::SOCKET_ERROR;
     }
   } else {
     LOG(Log::INF, CanLogIt::h) << "Not configuring SocketCAN device";
@@ -66,7 +66,7 @@ int CanVendorSocketCan::vendor_open() {
   if (socket_fd < 0) {
     LOG(Log::ERR, CanLogIt::h) << "Failed to open socket";
 
-    return CanDeviceError::SOCKET_ERROR;
+    return CanReturnCode::SOCKET_ERROR;
   }
 
   // Set up the CAN interface
@@ -76,7 +76,7 @@ int CanVendorSocketCan::vendor_open() {
   if (ioctl(socket_fd, SIOCGIFINDEX, &ifr) < 0) {
     ::close(socket_fd);
     LOG(Log::ERR, CanLogIt::h) << "Failed to get interface index";
-    return CanDeviceError::INTERNAL_API_ERROR;
+    return CanReturnCode::INTERNAL_API_ERROR;
   }
 
   struct sockaddr_can addr;
@@ -87,7 +87,7 @@ int CanVendorSocketCan::vendor_open() {
   if (bind(socket_fd, (struct sockaddr *)&addr, sizeof(addr)) < 0) {
     ::close(socket_fd);
     LOG(Log::ERR, CanLogIt::h) << "Failed to bind socket";
-    return CanDeviceError::INTERNAL_API_ERROR;
+    return CanReturnCode::INTERNAL_API_ERROR;
   }
 
   if (args().receiver != nullptr) {
@@ -97,7 +97,7 @@ int CanVendorSocketCan::vendor_open() {
       ::close(socket_fd);
       LOG(Log::ERR, CanLogIt::h) << "Failed to create epoll instance";
 
-      return CanDeviceError::INTERNAL_API_ERROR;
+      return CanReturnCode::INTERNAL_API_ERROR;
     }
 
     // Add the socket to the epoll instance
@@ -109,7 +109,7 @@ int CanVendorSocketCan::vendor_open() {
       ::close(socket_fd);
       LOG(Log::ERR, CanLogIt::h) << "Failed to add socket to epoll";
 
-      return CanDeviceError::INTERNAL_API_ERROR;
+      return CanReturnCode::INTERNAL_API_ERROR;
     }
 
     // Start the subscriber thread
@@ -122,7 +122,7 @@ int CanVendorSocketCan::vendor_open() {
 
   LOG(Log::DBG, CanLogIt::h) << "SocketCan connection opened";
 
-  return CanDeviceError::SUCCESS;
+  return CanReturnCode::SUCCESS;
 }
 
 /**
@@ -133,7 +133,7 @@ int CanVendorSocketCan::vendor_open() {
  *
  * @return int Returns 0 on success.
  */
-int CanVendorSocketCan::vendor_close() {
+CanReturnCode CanVendorSocketCan::vendor_close() {
   m_subcriber_run = false;
 
   // Stop the subscriber thread
@@ -144,18 +144,18 @@ int CanVendorSocketCan::vendor_close() {
   if (::close(epoll_fd) < 0) {
     LOG(Log::ERR, CanLogIt::h) << "Error while closing epoll";
 
-    return CanDeviceError::UNKNOWN_CLOSE_ERROR;
+    return CanReturnCode::UNKNOWN_CLOSE_ERROR;
   }
   if (socket_fd >= 0) {
     if (::close(socket_fd) < 0) {
       LOG(Log::ERR, CanLogIt::h) << "Error while closing socket";
 
-      return CanDeviceError::UNKNOWN_CLOSE_ERROR;
+      return CanReturnCode::UNKNOWN_CLOSE_ERROR;
     }
   }
   LOG(Log::DBG, CanLogIt::h) << "SocketCan connection closed";
 
-  return CanDeviceError::SUCCESS;
+  return CanReturnCode::SUCCESS;
 }
 
 /**
@@ -169,7 +169,7 @@ int CanVendorSocketCan::vendor_close() {
  * @return int Returns 0 on success, or -1 if the entire frame could not be
  * sent.
  */
-int CanVendorSocketCan::vendor_send(const CanFrame &frame) {
+CanReturnCode CanVendorSocketCan::vendor_send(const CanFrame &frame) {
   // Translate CanFrame to struct can_frame
   struct can_frame canFrame = translate(frame);
 
@@ -180,10 +180,10 @@ int CanVendorSocketCan::vendor_send(const CanFrame &frame) {
         << "SocketCan sent " << bytes_sent << " bytes, but expected "
         << sizeof(canFrame) << " bytes";
 
-    return CanDeviceError::UNKNOWN_SEND_ERROR;
+    return CanReturnCode::UNKNOWN_SEND_ERROR;
   }
 
-  return CanDeviceError::SUCCESS;
+  return CanReturnCode::SUCCESS;
 }
 
 /**

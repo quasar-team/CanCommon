@@ -62,7 +62,7 @@ void anagate_receive(AnaInt32 nIdentifier, const char *pcBuffer,
  * indicates success, while a non-zero value indicates an error. The specific
  * meaning of the error code can be obtained by calling CANGetLastError.
  */
-int CanVendorAnagate::vendor_open() {
+CanReturnCode CanVendorAnagate::vendor_open() {
   const AnaInt32 result = CANOpenDevice(
       &m_handle, args().config.sent_acknowledgement.value_or(false), true,
       args().config.bus_number.value(), args().config.host.value().c_str(),
@@ -75,15 +75,15 @@ int CanVendorAnagate::vendor_open() {
 
   switch (result) {
     case AnagateConstants::ERROR_NONE:
-      return CanDeviceError::SUCCESS;
+      return CanReturnCode::SUCCESS;
     case AnagateConstants::ERROR_OPEN_MAX_CONN:
-      return CanDeviceError::TOO_MANY_CONNECTIONS;
+      return CanReturnCode::TOO_MANY_CONNECTIONS;
     case AnagateConstants::ERROR_TCPIP_SOCKET:
-      return CanDeviceError::SOCKET_ERROR;
+      return CanReturnCode::SOCKET_ERROR;
     case AnagateConstants::ERROR_TCPIP_NOTCONNECTED:
-      return CanDeviceError::NOT_CONNECTED;
+      return CanReturnCode::NOT_CONNECTED;
     case AnagateConstants::ERROR_TCPIP_TIMEOUT:
-      return CanDeviceError::TIMEOUT;
+      return CanReturnCode::TIMEOUT;
     case AnagateConstants::ERROR_OP_CMD_FAILED:
     case AnagateConstants::ERROR_TCPIP_CALLNOTALLOWED:
     case AnagateConstants::ERROR_TCPIP_NOT_INITIALIZED:
@@ -92,12 +92,12 @@ int CanVendorAnagate::vendor_open() {
     case AnagateConstants::ERROR_INVALID_CONF_DATA:
     case AnagateConstants::ERROR_INVALID_DEVICE_HANDLE:
     case AnagateConstants::ERROR_INVALID_DEVICE_TYPE:
-      return CanDeviceError::INTERNAL_API_ERROR;
+      return CanReturnCode::INTERNAL_API_ERROR;
     default:
       LOG(Log::ERR, CanLogIt::h) << "Failed to open CAN device: Unknown error";
-      return CanDeviceError::UNKNOWN_OPEN_ERROR;
+      return CanReturnCode::UNKNOWN_OPEN_ERROR;
   }
-  return CanDeviceError::UNKNOWN_OPEN_ERROR;
+  return CanReturnCode::UNKNOWN_OPEN_ERROR;
 }
 /**
  * @brief Sends a CAN frame to the associated device.
@@ -112,7 +112,7 @@ int CanVendorAnagate::vendor_open() {
  * indicates success, while a non-zero value indicates an error. The specific
  * meaning of the error code can be obtained by calling CANGetLastError.
  */
-int CanVendorAnagate::vendor_send(const CanFrame &frame) {
+CanReturnCode CanVendorAnagate::vendor_send(const CanFrame &frame) {
   int anagate_flags{0};
   anagate_flags |= frame.is_extended_id() ? AnagateConstants::EXTENDED_ID : 0;
   anagate_flags |=
@@ -129,25 +129,25 @@ int CanVendorAnagate::vendor_send(const CanFrame &frame) {
 
   switch (sent_status) {
     case AnagateConstants::ERROR_NONE:
-      return CanDeviceError::SUCCESS;
+      return CanReturnCode::SUCCESS;
     case AnagateConstants::ERROR_CAN_NACK:
-      return CanDeviceError::CAN_NACK;
+      return CanReturnCode::CAN_NACK;
 
     case AnagateConstants::ERROR_CAN_TX_ERROR:
-      return CanDeviceError::CAN_TX_ERROR;
+      return CanReturnCode::CAN_TX_ERROR;
 
     case AnagateConstants::ERROR_CAN_TX_BUF_OVERLOW:
-      return CanDeviceError::CAN_TX_BUFFER_OVERFLOW;
+      return CanReturnCode::CAN_TX_BUFFER_OVERFLOW;
 
     case AnagateConstants::ERROR_CAN_TX_MLOA:
-      return CanDeviceError::CAN_LOST_ARBITRATION;
+      return CanReturnCode::CAN_LOST_ARBITRATION;
 
     case AnagateConstants::ERROR_CAN_NO_VALID_BAUDRATE:
-      return CanDeviceError::CAN_INVALID_BITRATE;
+      return CanReturnCode::CAN_INVALID_BITRATE;
 
     default:
       LOG(Log::ERR, CanLogIt::h) << "Failed to sent frame: Unknown error";
-      return CanDeviceError::UNKNOWN_OPEN_ERROR;
+      return CanReturnCode::UNKNOWN_OPEN_ERROR;
   }
 }
 
@@ -294,17 +294,17 @@ CanDiagnostics CanVendorAnagate::vendor_diagnostics() {
  * indicates success, while a non-zero value indicates an error. The specific
  * meaning of the error code can be obtained by calling CANGetLastError.
  */
-int CanVendorAnagate::vendor_close() {
+CanReturnCode CanVendorAnagate::vendor_close() {
   const int r = CANCloseDevice(m_handle);
   print_anagate_error(r);
   std::lock_guard<std::mutex> guard(CanVendorAnagate::m_handles_lock);
   CanVendorAnagate::m_handles.erase(m_handle);
   switch (r) {
     case AnagateConstants::ERROR_NONE:
-      return CanDeviceError::SUCCESS;
+      return CanReturnCode::SUCCESS;
     default:
 
-      return CanDeviceError::UNKNOWN_CLOSE_ERROR;
+      return CanReturnCode::UNKNOWN_CLOSE_ERROR;
   }
 }
 

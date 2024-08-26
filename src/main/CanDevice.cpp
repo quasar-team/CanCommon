@@ -21,13 +21,13 @@
  *
  * @return int Returns 0 on success, or a non-zero error code on failure.
  */
-int CanDevice::open() {
+CanReturnCode CanDevice::open() {
   LOG(Log::INF, CanLogIt::h) << "Opening CAN device " << m_vendor;
   LOG(Log::INF, CanLogIt::h) << "Configuration: " << m_args.config;
 
-  int result = vendor_open();
+  CanReturnCode result = vendor_open();
 
-  if (result != 0) {
+  if (result != CanReturnCode::SUCCESS) {
     LOG(Log::ERR, CanLogIt::h)
         << "Failed to open CAN device: error code " << result;
   } else {
@@ -44,12 +44,12 @@ int CanDevice::open() {
  *
  * @return int Returns 0 on success, or a non-zero error code on failure.
  */
-int CanDevice::close() {
+CanReturnCode CanDevice::close() {
   LOG(Log::INF, CanLogIt::h) << "Closing CAN device " << m_vendor;
 
-  int result = vendor_close();
+  CanReturnCode result = vendor_close();
 
-  if (result != 0) {
+  if (result != CanReturnCode::SUCCESS) {
     LOG(Log::ERR, CanLogIt::h)
         << "Failed to close CAN device: error code " << result;
   } else {
@@ -68,12 +68,12 @@ int CanDevice::close() {
  * @param frame The CAN frame to be sent. It must be a valid frame.
  * @return int Returns 0 on success, or a non-zero error code on failure.
  */
-int CanDevice::send(const CanFrame &frame) {
+CanReturnCode CanDevice::send(const CanFrame &frame) {
   LOG(Log::DBG, CanLogIt::h) << "Sending CAN frame: " << frame;
 
-  int result = vendor_send(frame);
+  CanReturnCode result = vendor_send(frame);
 
-  if (result != 0) {
+  if (result != CanReturnCode::SUCCESS) {
     LOG(Log::ERR, CanLogIt::h)
         << "Failed to send CAN frame: error code " << result;
   } else {
@@ -95,8 +95,9 @@ int CanDevice::send(const CanFrame &frame) {
  * @return std::vector<int> A vector of integers where each integer is 0 on
  * success or a non-zero error code on failure for the corresponding frame.
  */
-std::vector<int> CanDevice::send(const std::vector<CanFrame> &frames) {
-  std::vector<int> result(frames.size());
+std::vector<CanReturnCode> CanDevice::send(
+    const std::vector<CanFrame> &frames) {
+  std::vector<CanReturnCode> result(frames.size());
   std::transform(frames.begin(), frames.end(), result.begin(),
                  [this](const CanFrame &frame) { return send(frame); });
   return result;
@@ -155,4 +156,41 @@ std::unique_ptr<CanDevice> CanDevice::create(
 
   LOG(Log::ERR, CanLogIt::h) << "Unrecognized CAN device vendor: " << vendor;
   return nullptr;
+}
+
+std::ostream &operator<<(std::ostream &os, CanReturnCode code) {
+  switch (code) {
+    case CanReturnCode::SUCCESS:
+      return os << "SUCCESS";
+    case CanReturnCode::UNKNOWN_OPEN_ERROR:
+      return os << "UNKNOWN_OPEN_ERROR";
+    case CanReturnCode::SOCKET_ERROR:
+      return os << "SOCKET_ERROR";
+    case CanReturnCode::TOO_MANY_CONNECTIONS:
+      return os << "TOO_MANY_CONNECTIONS";
+    case CanReturnCode::TIMEOUT:
+      return os << "TIMEOUT";
+    case CanReturnCode::NOT_CONNECTED:
+      return os << "NOT_CONNECTED";
+    case CanReturnCode::UNACKNOWLEDGMENT:
+      return os << "UNACKNOWLEDGMENT";
+    case CanReturnCode::INTERNAL_API_ERROR:
+      return os << "INTERNAL_API_ERROR";
+    case CanReturnCode::UNKNOWN_SEND_ERROR:
+      return os << "UNKNOWN_SEND_ERROR";
+    case CanReturnCode::CAN_NACK:
+      return os << "CAN_NACK";
+    case CanReturnCode::CAN_TX_ERROR:
+      return os << "CAN_TX_ERROR";
+    case CanReturnCode::CAN_TX_BUFFER_OVERFLOW:
+      return os << "CAN_TX_BUFFER_OVERFLOW";
+    case CanReturnCode::CAN_LOST_ARBITRATION:
+      return os << "CAN_LOST_ARBITRATION";
+    case CanReturnCode::CAN_INVALID_BITRATE:
+      return os << "CAN_INVALID_BITRATE";
+    case CanReturnCode::UNKNOWN_CLOSE_ERROR:
+      return os << "UNKNOWN_CLOSE_ERROR";
+    default:
+      return os << "Unknown";
+  }
 }
