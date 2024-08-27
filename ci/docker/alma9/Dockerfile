@@ -4,9 +4,9 @@ ADD trigger /trigger
 RUN dnf install -y epel-release &&\
     dnf update -y &&\
     dnf install -y cmake ninja-build g++ cppcheck nano git git-lfs \
-                   python-pip doxygen libsocketcan-devel &&\
+                   python-pip python-devel doxygen libsocketcan-devel &&\
     dnf clean all
-RUN pip install pre-commit clang-format pytest
+RUN pip install pre-commit clang-format pytest pybind11
 
 RUN echo Triggered at: $(cat /trigger) >> /ISSUE &&\
     echo "*******************" >> /ISSUE &&\
