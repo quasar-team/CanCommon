@@ -12,6 +12,7 @@ DEVICE_TWO.bus_number = 1
 
 
 def test_anagate_single_message():
+    print("HELLO")
     received_frames_dev1 = []
     received_frames_dev2 = []
 
@@ -25,11 +26,11 @@ def test_anagate_single_message():
     o1 = myDevice1.open()
     o2 = myDevice2.open()
 
-    assert o1 == CanReturnCode.SUCCESS
-    assert o2 == CanReturnCode.SUCCESS
+    assert o1 == CanReturnCode.success
+    assert o2 == CanReturnCode.success
 
     s1 = myDevice1.send(CanFrame(123, ["H", "e", "l", "l", "o"]))
-    assert s1 == CanReturnCode.SUCCESS
+    assert s1 == CanReturnCode.success
 
     sleep(0.1)
 
@@ -61,7 +62,10 @@ def test_anagate_multiple_messages():
         CanFrame(1 << 25, ["J", "u", "s", "t"], can_flags.extended_id),
     ]
 
-    myDevice1.send(send_frames)
+    r = myDevice1.send(send_frames)
+
+    for e in r:
+        assert e == CanReturnCode.success
 
     sleep(0.1)
 

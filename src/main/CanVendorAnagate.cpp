@@ -94,7 +94,8 @@ CanReturnCode CanVendorAnagate::vendor_open() {
     case AnagateConstants::errorInvalidDeviceType:
       return CanReturnCode::internal_api_error;
     default:
-      LOG(Log::ERR, CanLogIt::h) << "Failed to open CAN device: Unknown error";
+      LOG(Log::ERR, CanLogIt::h())
+          << "Failed to open CAN device: Unknown error";
       return CanReturnCode::unknown_open_error;
   }
   return CanReturnCode::unknown_open_error;
@@ -146,7 +147,7 @@ CanReturnCode CanVendorAnagate::vendor_send(const CanFrame &frame) {
       return CanReturnCode::invalid_bitrate;
 
     default:
-      LOG(Log::ERR, CanLogIt::h) << "Failed to sent frame: Unknown error";
+      LOG(Log::ERR, CanLogIt::h()) << "Failed to sent frame: Unknown error";
       return CanReturnCode::unknown_open_error;
   }
 }
@@ -327,6 +328,6 @@ void CanVendorAnagate::print_anagate_error(AnaUInt32 r) {
     std::string error_string{};
     error_string.reserve(100);
     CANErrorMessage(r, error_string.data(), error_string.capacity());
-    LOG(Log::ERR, CanLogIt::h) << "ANAGATE ERROR: " << error_string;
+    LOG(Log::ERR, CanLogIt::h()) << "ANAGATE ERROR: " << error_string;
   }
 }

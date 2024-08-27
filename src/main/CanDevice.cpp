@@ -22,16 +22,16 @@
  * @return int Returns 0 on success, or a non-zero error code on failure.
  */
 CanReturnCode CanDevice::open() {
-  LOG(Log::INF, CanLogIt::h) << "Opening CAN device " << m_vendor;
-  LOG(Log::INF, CanLogIt::h) << "Configuration: " << m_args.config;
+  LOG(Log::INF, CanLogIt::h()) << "Opening CAN device " << m_vendor;
+  LOG(Log::INF, CanLogIt::h()) << "Configuration: " << m_args.config;
 
   CanReturnCode result = vendor_open();
 
   if (result != CanReturnCode::success) {
-    LOG(Log::ERR, CanLogIt::h)
+    LOG(Log::ERR, CanLogIt::h())
         << "Failed to open CAN device: error code " << result;
   } else {
-    LOG(Log::DBG, CanLogIt::h) << "Successfully opened CAN device";
+    LOG(Log::DBG, CanLogIt::h()) << "Successfully opened CAN device";
   }
 
   return result;
@@ -45,15 +45,15 @@ CanReturnCode CanDevice::open() {
  * @return int Returns 0 on success, or a non-zero error code on failure.
  */
 CanReturnCode CanDevice::close() {
-  LOG(Log::INF, CanLogIt::h) << "Closing CAN device " << m_vendor;
+  LOG(Log::INF, CanLogIt::h()) << "Closing CAN device " << m_vendor;
 
   CanReturnCode result = vendor_close();
 
   if (result != CanReturnCode::success) {
-    LOG(Log::ERR, CanLogIt::h)
+    LOG(Log::ERR, CanLogIt::h())
         << "Failed to close CAN device: error code " << result;
   } else {
-    LOG(Log::DBG, CanLogIt::h) << "Successfully closed CAN device";
+    LOG(Log::DBG, CanLogIt::h()) << "Successfully closed CAN device";
   }
 
   return result;
@@ -69,15 +69,15 @@ CanReturnCode CanDevice::close() {
  * @return int Returns 0 on success, or a non-zero error code on failure.
  */
 CanReturnCode CanDevice::send(const CanFrame &frame) {
-  LOG(Log::DBG, CanLogIt::h) << "Sending CAN frame: " << frame;
+  LOG(Log::DBG, CanLogIt::h()) << "Sending CAN frame: " << frame;
 
   CanReturnCode result = vendor_send(frame);
 
   if (result != CanReturnCode::success) {
-    LOG(Log::ERR, CanLogIt::h)
+    LOG(Log::ERR, CanLogIt::h())
         << "Failed to send CAN frame: error code " << result;
   } else {
-    LOG(Log::TRC, CanLogIt::h) << "Successfully sent CAN frame: " << frame;
+    LOG(Log::TRC, CanLogIt::h()) << "Successfully sent CAN frame: " << frame;
   }
 
   return result;
@@ -134,27 +134,27 @@ CanDiagnostics CanDevice::diagnostics() { return vendor_diagnostics(); }
  */
 std::unique_ptr<CanDevice> CanDevice::create(
     std::string_view vendor, const CanDeviceArguments &configuration) {
-  LOG(Log::INF, CanLogIt::h) << "Creating CAN device for vendor: " << vendor;
-  LOG(Log::INF, CanLogIt::h) << "Configuration: " << configuration.config;
+  LOG(Log::INF, CanLogIt::h()) << "Creating CAN device for vendor: " << vendor;
+  LOG(Log::INF, CanLogIt::h()) << "Configuration: " << configuration.config;
 
   if (vendor == "loopback") {
-    LOG(Log::DBG, CanLogIt::h) << "Creating Loopback CAN device";
+    LOG(Log::DBG, CanLogIt::h()) << "Creating Loopback CAN device";
     return std::make_unique<CanVendorLoopback>(configuration);
   }
 
 #ifndef _WIN32
   if (vendor == "socketcan") {
-    LOG(Log::DBG, CanLogIt::h) << "Creating SocketCAN CAN device";
+    LOG(Log::DBG, CanLogIt::h()) << "Creating SocketCAN CAN device";
     return std::make_unique<CanVendorSocketCan>(configuration);
   }
 #endif
 
   if (vendor == "anagate") {
-    LOG(Log::DBG, CanLogIt::h) << "Creating Anagate CAN device";
+    LOG(Log::DBG, CanLogIt::h()) << "Creating Anagate CAN device";
     return std::make_unique<CanVendorAnagate>(configuration);
   }
 
-  LOG(Log::ERR, CanLogIt::h) << "Unrecognized CAN device vendor: " << vendor;
+  LOG(Log::ERR, CanLogIt::h()) << "Unrecognized CAN device vendor: " << vendor;
   return nullptr;
 }
 
