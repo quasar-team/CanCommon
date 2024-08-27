@@ -31,28 +31,27 @@ PYBIND11_MODULE(canmodule, m) {
       .def("__str__", &CanFrame::to_string);
 
   py::module_ can_flags =
-      m.def_submodule("CanFlags", "Namespace for CAN frame flags");
-  can_flags.attr("STANDARD_ID") = CanFlags::STANDARD_ID;
-  can_flags.attr("EXTENDED_ID") = CanFlags::EXTENDED_ID;
-  can_flags.attr("ERROR_FRAME") = CanFlags::ERROR_FRAME;
-  can_flags.attr("REMOTE_REQUEST") = CanFlags::REMOTE_REQUEST;
+      m.def_submodule("can_flags", "Namespace for CAN frame flags");
+  can_flags.attr("standard_id") = can_flags::standard_id;
+  can_flags.attr("extended_id") = can_flags::extended_id;
+  can_flags.attr("error_frame") = can_flags::error_frame;
+  can_flags.attr("remote_request") = can_flags::remote_request;
 
   py::enum_<CanReturnCode>(m, "CanReturnCode")
-      .value("SUCCESS", CanReturnCode::SUCCESS)
-      .value("UNKNOWN_OPEN_ERROR", CanReturnCode::UNKNOWN_OPEN_ERROR)
-      .value("SOCKET_ERROR", CanReturnCode::SOCKET_ERROR)
-      .value("TOO_MANY_CONNECTIONS", CanReturnCode::TOO_MANY_CONNECTIONS)
-      .value("TIMEOUT", CanReturnCode::TIMEOUT)
-      .value("NOT_CONNECTED", CanReturnCode::NOT_CONNECTED)
-      .value("UNACKNOWLEDMENT", CanReturnCode::UNACKNOWLEDGMENT)
-      .value("INTERNAL_API_ERROR", CanReturnCode::INTERNAL_API_ERROR)
-      .value("UNKNOWN_SEND_ERROR", CanReturnCode::UNKNOWN_SEND_ERROR)
-      .value("CAN_NACK", CanReturnCode::CAN_NACK)
-      .value("CAN_TX_ERROR", CanReturnCode::CAN_TX_ERROR)
-      .value("CAN_TX_BUFFER_OVERFLOW", CanReturnCode::CAN_TX_BUFFER_OVERFLOW)
-      .value("CAN_LOST_ARBITRATION", CanReturnCode::CAN_LOST_ARBITRATION)
-      .value("CAN_INVALID_BITRATE", CanReturnCode::CAN_INVALID_BITRATE)
-      .value("UNKNOWN_CLOSE_ERROR", CanReturnCode::UNKNOWN_CLOSE_ERROR)
+      .value("success", CanReturnCode::success)
+      .value("unknown_open_error", CanReturnCode::unknown_open_error)
+      .value("socket_error", CanReturnCode::socket_error)
+      .value("too_many_connections", CanReturnCode::too_many_connections)
+      .value("timeout", CanReturnCode::timeout)
+      .value("disconnected", CanReturnCode::disconnected)
+      .value("internal_api_error", CanReturnCode::internal_api_error)
+      .value("unknown_send_error", CanReturnCode::unknown_send_error)
+      .value("not_ack", CanReturnCode::not_ack)
+      .value("tx_error", CanReturnCode::tx_error)
+      .value("tx_buffer_overflow", CanReturnCode::tx_buffer_overflow)
+      .value("lost_arbitration", CanReturnCode::lost_arbitration)
+      .value("invalid_bitrate", CanReturnCode::invalid_bitrate)
+      .value("unknown_close_error", CanReturnCode::unknown_close_error)
       .export_values();
 
   py::class_<CanDevice>(m, "CanDevice")

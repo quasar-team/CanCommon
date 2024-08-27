@@ -12,21 +12,20 @@
 #include "CanFrame.h"
 
 enum class CanReturnCode {
-  SUCCESS,
-  UNKNOWN_OPEN_ERROR,
-  SOCKET_ERROR,
-  TOO_MANY_CONNECTIONS,
-  TIMEOUT,
-  NOT_CONNECTED,
-  UNACKNOWLEDGMENT,
-  INTERNAL_API_ERROR,
-  UNKNOWN_SEND_ERROR,
-  CAN_NACK,
-  CAN_TX_ERROR,
-  CAN_TX_BUFFER_OVERFLOW,
-  CAN_LOST_ARBITRATION,
-  CAN_INVALID_BITRATE,
-  UNKNOWN_CLOSE_ERROR,
+  success,
+  unknown_open_error,
+  socket_error,
+  too_many_connections,
+  timeout,
+  disconnected,
+  internal_api_error,
+  unknown_send_error,
+  not_ack,
+  tx_error,
+  tx_buffer_overflow,
+  lost_arbitration,
+  invalid_bitrate,
+  unknown_close_error,
 };
 
 std::ostream& operator<<(std::ostream& os, CanReturnCode code);

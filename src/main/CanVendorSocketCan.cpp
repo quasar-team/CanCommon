@@ -37,25 +37,25 @@ CanReturnCode CanVendorSocketCan::vendor_open() {
         LIBSOCKETCAN_ERROR) {
       LOG(Log::ERR, CanLogIt::h) << "Failed to stop CAN bus";
 
-      return CanReturnCode::SOCKET_ERROR;
+      return CanReturnCode::socket_error;
     }
     if (can_set_bitrate(args().config.bus_name.value().c_str(),
                         args().config.bitrate.value()) == LIBSOCKETCAN_ERROR) {
       LOG(Log::ERR, CanLogIt::h) << "Failed to set bitrate";
 
-      return CanReturnCode::SOCKET_ERROR;
+      return CanReturnCode::socket_error;
     }
     if (can_set_restart_ms(args().config.bus_name.value().c_str(),
                            args().config.timeout.value_or(0)) ==
         LIBSOCKETCAN_ERROR) {
       LOG(Log::ERR, CanLogIt::h) << "Failed to set restart delay";
-      return CanReturnCode::SOCKET_ERROR;
+      return CanReturnCode::socket_error;
     }
     if (can_do_start(args().config.bus_name.value().c_str()) ==
         LIBSOCKETCAN_ERROR) {
       LOG(Log::ERR, CanLogIt::h) << "Failed to start CAN bus";
 
-      return CanReturnCode::SOCKET_ERROR;
+      return CanReturnCode::socket_error;
     }
   } else {
     LOG(Log::INF, CanLogIt::h) << "Not configuring SocketCAN device";
@@ -66,7 +66,7 @@ CanReturnCode CanVendorSocketCan::vendor_open() {
   if (socket_fd < 0) {
     LOG(Log::ERR, CanLogIt::h) << "Failed to open socket";
 
-    return CanReturnCode::SOCKET_ERROR;
+    return CanReturnCode::socket_error;
   }
 
   // Set up the CAN interface
@@ -76,7 +76,7 @@ CanReturnCode CanVendorSocketCan::vendor_open() {
   if (ioctl(socket_fd, SIOCGIFINDEX, &ifr) < 0) {
     ::close(socket_fd);
     LOG(Log::ERR, CanLogIt::h) << "Failed to get interface index";
-    return CanReturnCode::INTERNAL_API_ERROR;
+    return CanReturnCode::internal_api_error;
   }
 
   struct sockaddr_can addr;
@@ -87,7 +87,7 @@ CanReturnCode CanVendorSocketCan::vendor_open() {
   if (bind(socket_fd, (struct sockaddr *)&addr, sizeof(addr)) < 0) {
     ::close(socket_fd);
     LOG(Log::ERR, CanLogIt::h) << "Failed to bind socket";
-    return CanReturnCode::INTERNAL_API_ERROR;
+    return CanReturnCode::internal_api_error;
   }
 
   if (args().receiver != nullptr) {
@@ -97,7 +97,7 @@ CanReturnCode CanVendorSocketCan::vendor_open() {
       ::close(socket_fd);
       LOG(Log::ERR, CanLogIt::h) << "Failed to create epoll instance";
 
-      return CanReturnCode::INTERNAL_API_ERROR;
+      return CanReturnCode::internal_api_error;
     }
 
     // Add the socket to the epoll instance
@@ -109,7 +109,7 @@ CanReturnCode CanVendorSocketCan::vendor_open() {
       ::close(socket_fd);
       LOG(Log::ERR, CanLogIt::h) << "Failed to add socket to epoll";
 
-      return CanReturnCode::INTERNAL_API_ERROR;
+      return CanReturnCode::internal_api_error;
     }
 
     // Start the subscriber thread
@@ -122,7 +122,7 @@ CanReturnCode CanVendorSocketCan::vendor_open() {
 
   LOG(Log::DBG, CanLogIt::h) << "SocketCan connection opened";
 
-  return CanReturnCode::SUCCESS;
+  return CanReturnCode::success;
 }
 
 /**
@@ -144,18 +144,18 @@ CanReturnCode CanVendorSocketCan::vendor_close() {
   if (::close(epoll_fd) < 0) {
     LOG(Log::ERR, CanLogIt::h) << "Error while closing epoll";
 
-    return CanReturnCode::UNKNOWN_CLOSE_ERROR;
+    return CanReturnCode::unknown_close_error;
   }
   if (socket_fd >= 0) {
     if (::close(socket_fd) < 0) {
       LOG(Log::ERR, CanLogIt::h) << "Error while closing socket";
 
-      return CanReturnCode::UNKNOWN_CLOSE_ERROR;
+      return CanReturnCode::unknown_close_error;
     }
   }
   LOG(Log::DBG, CanLogIt::h) << "SocketCan connection closed";
 
-  return CanReturnCode::SUCCESS;
+  return CanReturnCode::success;
 }
 
 /**
@@ -180,10 +180,10 @@ CanReturnCode CanVendorSocketCan::vendor_send(const CanFrame &frame) {
         << "SocketCan sent " << bytes_sent << " bytes, but expected "
         << sizeof(canFrame) << " bytes";
 
-    return CanReturnCode::UNKNOWN_SEND_ERROR;
+    return CanReturnCode::unknown_send_error;
   }
 
-  return CanReturnCode::SUCCESS;
+  return CanReturnCode::success;
 }
 
 /**
@@ -322,9 +322,9 @@ const CanFrame CanVendorSocketCan::translate(const struct can_frame &canFrame) {
   const auto data = std::vector<char>(canFrame.data, canFrame.data + length);
 
   uint32_t flags{0};
-  flags |= rtr ? CanFlags::REMOTE_REQUEST : 0;
-  flags |= error ? CanFlags::ERROR_FRAME : 0;
-  flags |= eff ? CanFlags::EXTENDED_ID : 0;
+  flags |= rtr ? can_flags::remote_request : 0;
+  flags |= error ? can_flags::error_frame : 0;
+  flags |= eff ? can_flags::extended_id : 0;
 
   if (rtr) {
     return CanFrame{id, length, flags};

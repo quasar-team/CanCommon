@@ -27,7 +27,7 @@ CanReturnCode CanDevice::open() {
 
   CanReturnCode result = vendor_open();
 
-  if (result != CanReturnCode::SUCCESS) {
+  if (result != CanReturnCode::success) {
     LOG(Log::ERR, CanLogIt::h)
         << "Failed to open CAN device: error code " << result;
   } else {
@@ -49,7 +49,7 @@ CanReturnCode CanDevice::close() {
 
   CanReturnCode result = vendor_close();
 
-  if (result != CanReturnCode::SUCCESS) {
+  if (result != CanReturnCode::success) {
     LOG(Log::ERR, CanLogIt::h)
         << "Failed to close CAN device: error code " << result;
   } else {
@@ -73,7 +73,7 @@ CanReturnCode CanDevice::send(const CanFrame &frame) {
 
   CanReturnCode result = vendor_send(frame);
 
-  if (result != CanReturnCode::SUCCESS) {
+  if (result != CanReturnCode::success) {
     LOG(Log::ERR, CanLogIt::h)
         << "Failed to send CAN frame: error code " << result;
   } else {
@@ -160,35 +160,33 @@ std::unique_ptr<CanDevice> CanDevice::create(
 
 std::ostream &operator<<(std::ostream &os, CanReturnCode code) {
   switch (code) {
-    case CanReturnCode::SUCCESS:
+    case CanReturnCode::success:
       return os << "SUCCESS";
-    case CanReturnCode::UNKNOWN_OPEN_ERROR:
+    case CanReturnCode::unknown_open_error:
       return os << "UNKNOWN_OPEN_ERROR";
-    case CanReturnCode::SOCKET_ERROR:
+    case CanReturnCode::socket_error:
       return os << "SOCKET_ERROR";
-    case CanReturnCode::TOO_MANY_CONNECTIONS:
+    case CanReturnCode::too_many_connections:
       return os << "TOO_MANY_CONNECTIONS";
-    case CanReturnCode::TIMEOUT:
+    case CanReturnCode::timeout:
       return os << "TIMEOUT";
-    case CanReturnCode::NOT_CONNECTED:
+    case CanReturnCode::disconnected:
       return os << "NOT_CONNECTED";
-    case CanReturnCode::UNACKNOWLEDGMENT:
-      return os << "UNACKNOWLEDGMENT";
-    case CanReturnCode::INTERNAL_API_ERROR:
+    case CanReturnCode::internal_api_error:
       return os << "INTERNAL_API_ERROR";
-    case CanReturnCode::UNKNOWN_SEND_ERROR:
+    case CanReturnCode::unknown_send_error:
       return os << "UNKNOWN_SEND_ERROR";
-    case CanReturnCode::CAN_NACK:
+    case CanReturnCode::not_ack:
       return os << "CAN_NACK";
-    case CanReturnCode::CAN_TX_ERROR:
+    case CanReturnCode::tx_error:
       return os << "CAN_TX_ERROR";
-    case CanReturnCode::CAN_TX_BUFFER_OVERFLOW:
+    case CanReturnCode::tx_buffer_overflow:
       return os << "CAN_TX_BUFFER_OVERFLOW";
-    case CanReturnCode::CAN_LOST_ARBITRATION:
+    case CanReturnCode::lost_arbitration:
       return os << "CAN_LOST_ARBITRATION";
-    case CanReturnCode::CAN_INVALID_BITRATE:
+    case CanReturnCode::invalid_bitrate:
       return os << "CAN_INVALID_BITRATE";
-    case CanReturnCode::UNKNOWN_CLOSE_ERROR:
+    case CanReturnCode::unknown_close_error:
       return os << "UNKNOWN_CLOSE_ERROR";
     default:
       return os << "Unknown";

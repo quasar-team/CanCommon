@@ -1,30 +1,29 @@
 from __future__ import annotations
 import typing
-from . import CanFlags
+from . import can_flags
 
 __all__ = [
-    "CAN_INVALID_BITRATE",
-    "CAN_LOST_ARBITRATION",
-    "CAN_NACK",
-    "CAN_TX_BUFFER_OVERFLOW",
-    "CAN_TX_ERROR",
     "CanDevice",
     "CanDeviceArguments",
     "CanDeviceConfiguration",
     "CanDiagnostics",
-    "CanFlags",
     "CanFrame",
     "CanReturnCode",
-    "INTERNAL_API_ERROR",
-    "NOT_CONNECTED",
-    "SOCKET_ERROR",
-    "SUCCESS",
-    "TIMEOUT",
-    "TOO_MANY_CONNECTIONS",
-    "UNACKNOWLEDMENT",
-    "UNKNOWN_CLOSE_ERROR",
-    "UNKNOWN_OPEN_ERROR",
-    "UNKNOWN_SEND_ERROR",
+    "can_flags",
+    "disconnected",
+    "internal_api_error",
+    "invalid_bitrate",
+    "lost_arbitration",
+    "not_ack",
+    "socket_error",
+    "success",
+    "timeout",
+    "too_many_connections",
+    "tx_buffer_overflow",
+    "tx_error",
+    "unknown_close_error",
+    "unknown_open_error",
+    "unknown_send_error",
 ]
 
 class CanDevice:
@@ -141,79 +140,72 @@ class CanReturnCode:
     """
     Members:
 
-      SUCCESS
+      success
 
-      UNKNOWN_OPEN_ERROR
+      unknown_open_error
 
-      SOCKET_ERROR
+      socket_error
 
-      TOO_MANY_CONNECTIONS
+      too_many_connections
 
-      TIMEOUT
+      timeout
 
-      NOT_CONNECTED
+      disconnected
 
-      UNACKNOWLEDMENT
+      internal_api_error
 
-      INTERNAL_API_ERROR
+      unknown_send_error
 
-      UNKNOWN_SEND_ERROR
+      not_ack
 
-      CAN_NACK
+      tx_error
 
-      CAN_TX_ERROR
+      tx_buffer_overflow
 
-      CAN_TX_BUFFER_OVERFLOW
+      lost_arbitration
 
-      CAN_LOST_ARBITRATION
+      invalid_bitrate
 
-      CAN_INVALID_BITRATE
-
-      UNKNOWN_CLOSE_ERROR
+      unknown_close_error
     """
 
-    CAN_INVALID_BITRATE: typing.ClassVar[
-        CanReturnCode
-    ]  # value = <CanReturnCode.CAN_INVALID_BITRATE: 13>
-    CAN_LOST_ARBITRATION: typing.ClassVar[
-        CanReturnCode
-    ]  # value = <CanReturnCode.CAN_LOST_ARBITRATION: 12>
-    CAN_NACK: typing.ClassVar[CanReturnCode]  # value = <CanReturnCode.CAN_NACK: 9>
-    CAN_TX_BUFFER_OVERFLOW: typing.ClassVar[
-        CanReturnCode
-    ]  # value = <CanReturnCode.CAN_TX_BUFFER_OVERFLOW: 11>
-    CAN_TX_ERROR: typing.ClassVar[
-        CanReturnCode
-    ]  # value = <CanReturnCode.CAN_TX_ERROR: 10>
-    INTERNAL_API_ERROR: typing.ClassVar[
-        CanReturnCode
-    ]  # value = <CanReturnCode.INTERNAL_API_ERROR: 7>
-    NOT_CONNECTED: typing.ClassVar[
-        CanReturnCode
-    ]  # value = <CanReturnCode.NOT_CONNECTED: 5>
-    SOCKET_ERROR: typing.ClassVar[
-        CanReturnCode
-    ]  # value = <CanReturnCode.SOCKET_ERROR: 2>
-    SUCCESS: typing.ClassVar[CanReturnCode]  # value = <CanReturnCode.SUCCESS: 0>
-    TIMEOUT: typing.ClassVar[CanReturnCode]  # value = <CanReturnCode.TIMEOUT: 4>
-    TOO_MANY_CONNECTIONS: typing.ClassVar[
-        CanReturnCode
-    ]  # value = <CanReturnCode.TOO_MANY_CONNECTIONS: 3>
-    UNACKNOWLEDMENT: typing.ClassVar[
-        CanReturnCode
-    ]  # value = <CanReturnCode.UNACKNOWLEDMENT: 6>
-    UNKNOWN_CLOSE_ERROR: typing.ClassVar[
-        CanReturnCode
-    ]  # value = <CanReturnCode.UNKNOWN_CLOSE_ERROR: 14>
-    UNKNOWN_OPEN_ERROR: typing.ClassVar[
-        CanReturnCode
-    ]  # value = <CanReturnCode.UNKNOWN_OPEN_ERROR: 1>
-    UNKNOWN_SEND_ERROR: typing.ClassVar[
-        CanReturnCode
-    ]  # value = <CanReturnCode.UNKNOWN_SEND_ERROR: 8>
     __members__: typing.ClassVar[
         dict[str, CanReturnCode]
-    ]  # value = {'SUCCESS': <CanReturnCode.SUCCESS: 0>, 'UNKNOWN_OPEN_ERROR': <CanReturnCode.UNKNOWN_OPEN_ERROR: 1>, 'SOCKET_ERROR': <CanReturnCode.SOCKET_ERROR: 2>, 'TOO_MANY_CONNECTIONS': <CanReturnCode.TOO_MANY_CONNECTIONS: 3>, 'TIMEOUT': <CanReturnCode.TIMEOUT: 4>, 'NOT_CONNECTED': <CanReturnCode.NOT_CONNECTED: 5>, 'UNACKNOWLEDMENT': <CanReturnCode.UNACKNOWLEDMENT: 6>, 'INTERNAL_API_ERROR': <CanReturnCode.INTERNAL_API_ERROR: 7>, 'UNKNOWN_SEND_ERROR': <CanReturnCode.UNKNOWN_SEND_ERROR: 8>, 'CAN_NACK': <CanReturnCode.CAN_NACK: 9>, 'CAN_TX_ERROR': <CanReturnCode.CAN_TX_ERROR: 10>, 'CAN_TX_BUFFER_OVERFLOW': <CanReturnCode.CAN_TX_BUFFER_OVERFLOW: 11>, 'CAN_LOST_ARBITRATION': <CanReturnCode.CAN_LOST_ARBITRATION: 12>, 'CAN_INVALID_BITRATE': <CanReturnCode.CAN_INVALID_BITRATE: 13>, 'UNKNOWN_CLOSE_ERROR': <CanReturnCode.UNKNOWN_CLOSE_ERROR: 14>}
+    ]  # value = {'success': <CanReturnCode.success: 0>, 'unknown_open_error': <CanReturnCode.unknown_open_error: 1>, 'socket_error': <CanReturnCode.socket_error: 2>, 'too_many_connections': <CanReturnCode.too_many_connections: 3>, 'timeout': <CanReturnCode.timeout: 4>, 'disconnected': <CanReturnCode.disconnected: 5>, 'internal_api_error': <CanReturnCode.internal_api_error: 6>, 'unknown_send_error': <CanReturnCode.unknown_send_error: 7>, 'not_ack': <CanReturnCode.not_ack: 8>, 'tx_error': <CanReturnCode.tx_error: 9>, 'tx_buffer_overflow': <CanReturnCode.tx_buffer_overflow: 10>, 'lost_arbitration': <CanReturnCode.lost_arbitration: 11>, 'invalid_bitrate': <CanReturnCode.invalid_bitrate: 12>, 'unknown_close_error': <CanReturnCode.unknown_close_error: 13>}
+    disconnected: typing.ClassVar[
+        CanReturnCode
+    ]  # value = <CanReturnCode.disconnected: 5>
+    internal_api_error: typing.ClassVar[
+        CanReturnCode
+    ]  # value = <CanReturnCode.internal_api_error: 6>
+    invalid_bitrate: typing.ClassVar[
+        CanReturnCode
+    ]  # value = <CanReturnCode.invalid_bitrate: 12>
+    lost_arbitration: typing.ClassVar[
+        CanReturnCode
+    ]  # value = <CanReturnCode.lost_arbitration: 11>
+    not_ack: typing.ClassVar[CanReturnCode]  # value = <CanReturnCode.not_ack: 8>
+    socket_error: typing.ClassVar[
+        CanReturnCode
+    ]  # value = <CanReturnCode.socket_error: 2>
+    success: typing.ClassVar[CanReturnCode]  # value = <CanReturnCode.success: 0>
+    timeout: typing.ClassVar[CanReturnCode]  # value = <CanReturnCode.timeout: 4>
+    too_many_connections: typing.ClassVar[
+        CanReturnCode
+    ]  # value = <CanReturnCode.too_many_connections: 3>
+    tx_buffer_overflow: typing.ClassVar[
+        CanReturnCode
+    ]  # value = <CanReturnCode.tx_buffer_overflow: 10>
+    tx_error: typing.ClassVar[CanReturnCode]  # value = <CanReturnCode.tx_error: 9>
+    unknown_close_error: typing.ClassVar[
+        CanReturnCode
+    ]  # value = <CanReturnCode.unknown_close_error: 13>
+    unknown_open_error: typing.ClassVar[
+        CanReturnCode
+    ]  # value = <CanReturnCode.unknown_open_error: 1>
+    unknown_send_error: typing.ClassVar[
+        CanReturnCode
+    ]  # value = <CanReturnCode.unknown_send_error: 7>
     def __eq__(self, other: typing.Any) -> bool: ...
     def __getstate__(self) -> int: ...
     def __hash__(self) -> int: ...
@@ -229,20 +221,17 @@ class CanReturnCode:
     @property
     def value(self) -> int: ...
 
-CAN_INVALID_BITRATE: CanReturnCode  # value = <CanReturnCode.CAN_INVALID_BITRATE: 13>
-CAN_LOST_ARBITRATION: CanReturnCode  # value = <CanReturnCode.CAN_LOST_ARBITRATION: 12>
-CAN_NACK: CanReturnCode  # value = <CanReturnCode.CAN_NACK: 9>
-CAN_TX_BUFFER_OVERFLOW: (
-    CanReturnCode  # value = <CanReturnCode.CAN_TX_BUFFER_OVERFLOW: 11>
-)
-CAN_TX_ERROR: CanReturnCode  # value = <CanReturnCode.CAN_TX_ERROR: 10>
-INTERNAL_API_ERROR: CanReturnCode  # value = <CanReturnCode.INTERNAL_API_ERROR: 7>
-NOT_CONNECTED: CanReturnCode  # value = <CanReturnCode.NOT_CONNECTED: 5>
-SOCKET_ERROR: CanReturnCode  # value = <CanReturnCode.SOCKET_ERROR: 2>
-SUCCESS: CanReturnCode  # value = <CanReturnCode.SUCCESS: 0>
-TIMEOUT: CanReturnCode  # value = <CanReturnCode.TIMEOUT: 4>
-TOO_MANY_CONNECTIONS: CanReturnCode  # value = <CanReturnCode.TOO_MANY_CONNECTIONS: 3>
-UNACKNOWLEDMENT: CanReturnCode  # value = <CanReturnCode.UNACKNOWLEDMENT: 6>
-UNKNOWN_CLOSE_ERROR: CanReturnCode  # value = <CanReturnCode.UNKNOWN_CLOSE_ERROR: 14>
-UNKNOWN_OPEN_ERROR: CanReturnCode  # value = <CanReturnCode.UNKNOWN_OPEN_ERROR: 1>
-UNKNOWN_SEND_ERROR: CanReturnCode  # value = <CanReturnCode.UNKNOWN_SEND_ERROR: 8>
+disconnected: CanReturnCode  # value = <CanReturnCode.disconnected: 5>
+internal_api_error: CanReturnCode  # value = <CanReturnCode.internal_api_error: 6>
+invalid_bitrate: CanReturnCode  # value = <CanReturnCode.invalid_bitrate: 12>
+lost_arbitration: CanReturnCode  # value = <CanReturnCode.lost_arbitration: 11>
+not_ack: CanReturnCode  # value = <CanReturnCode.not_ack: 8>
+socket_error: CanReturnCode  # value = <CanReturnCode.socket_error: 2>
+success: CanReturnCode  # value = <CanReturnCode.success: 0>
+timeout: CanReturnCode  # value = <CanReturnCode.timeout: 4>
+too_many_connections: CanReturnCode  # value = <CanReturnCode.too_many_connections: 3>
+tx_buffer_overflow: CanReturnCode  # value = <CanReturnCode.tx_buffer_overflow: 10>
+tx_error: CanReturnCode  # value = <CanReturnCode.tx_error: 9>
+unknown_close_error: CanReturnCode  # value = <CanReturnCode.unknown_close_error: 13>
+unknown_open_error: CanReturnCode  # value = <CanReturnCode.unknown_open_error: 1>
+unknown_send_error: CanReturnCode  # value = <CanReturnCode.unknown_send_error: 7>

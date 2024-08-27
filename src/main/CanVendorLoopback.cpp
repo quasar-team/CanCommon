@@ -11,5 +11,5 @@
  */
 CanReturnCode CanVendorLoopback::vendor_send(const CanFrame &frame) {
   received(frame);
-  return CanReturnCode::SUCCESS;
+  return CanReturnCode::success;
 }

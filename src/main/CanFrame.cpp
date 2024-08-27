@@ -23,7 +23,7 @@ void CanFrame::validate_frame() {
   }
 
   if (is_29_bits_id() && !is_11_bits_id() &&
-      !(m_flags & CanFlags::EXTENDED_ID)) {
+      !(m_flags & can_flags::extended_id)) {
     LOG(Log::ERR, CanLogIt::h)
         << "Invalid CAN frame: Extended ID flag is not set.";
     throw std::invalid_argument(
@@ -37,14 +37,14 @@ void CanFrame::validate_frame() {
         "Invalid CAN frame: Message length exceeds 8 bytes.");
   }
 
-  if (m_requested_length > 0 && !(m_flags & CanFlags::REMOTE_REQUEST)) {
+  if (m_requested_length > 0 && !(m_flags & can_flags::remote_request)) {
     LOG(Log::ERR, CanLogIt::h) << "Invalid CAN frame: Requested length is set "
                                   "but not a remote request.";
     throw std::invalid_argument(
         "Invalid CAN frame: Requested length is set but not a remote request.");
   }
 
-  if (m_message.size() > 0 && (m_flags & CanFlags::REMOTE_REQUEST)) {
+  if (m_message.size() > 0 && (m_flags & can_flags::remote_request)) {
     LOG(Log::ERR, CanLogIt::h)
         << "Invalid CAN frame: Message is present but it's a remote request.";
     throw std::invalid_argument(

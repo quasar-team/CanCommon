@@ -31,13 +31,13 @@ std::map<int, CanVendorAnagate *> CanVendorAnagate::m_handles;
 void anagate_receive(AnaInt32 nIdentifier, const char *pcBuffer,
                      AnaInt32 nBufferLen, AnaInt32 nFlags, AnaInt32 hHandle) {
   uint32_t flags{0};
-  (nFlags & AnagateConstants::EXTENDED_ID) ? flags |= CanFlags::EXTENDED_ID : 0;
-  (nFlags & AnagateConstants::REMOTE_REQUEST)
-      ? flags |= CanFlags::REMOTE_REQUEST
+  (nFlags & AnagateConstants::extendedId) ? flags |= can_flags::extended_id : 0;
+  (nFlags & AnagateConstants::remoteRequest)
+      ? flags |= can_flags::remote_request
       : 0;
   auto o = CanVendorAnagate::m_handles[hHandle];
   if (o != nullptr) {
-    if (flags & CanFlags::REMOTE_REQUEST) {
+    if (flags & can_flags::remote_request) {
       o->received(CanFrame{static_cast<uint32_t>(nIdentifier),
                            static_cast<uint32_t>(nBufferLen), flags});
     } else {
@@ -66,7 +66,7 @@ CanReturnCode CanVendorAnagate::vendor_open() {
   const AnaInt32 result = CANOpenDevice(
       &m_handle, args().config.sent_acknowledgement.value_or(false), true,
       args().config.bus_number.value(), args().config.host.value().c_str(),
-      args().config.timeout.value_or(AnagateConstants::default_timeout));
+      args().config.timeout.value_or(AnagateConstants::defaultTimeout));
   CANSetCallback(m_handle, reinterpret_cast<CAN_PF_CALLBACK>(anagate_receive));
   std::lock_guard<std::mutex> guard(CanVendorAnagate::m_handles_lock);
   CanVendorAnagate::m_handles[m_handle] = this;
@@ -74,30 +74,30 @@ CanReturnCode CanVendorAnagate::vendor_open() {
   print_anagate_error(result);
 
   switch (result) {
-    case AnagateConstants::ERROR_NONE:
-      return CanReturnCode::SUCCESS;
-    case AnagateConstants::ERROR_OPEN_MAX_CONN:
-      return CanReturnCode::TOO_MANY_CONNECTIONS;
-    case AnagateConstants::ERROR_TCPIP_SOCKET:
-      return CanReturnCode::SOCKET_ERROR;
-    case AnagateConstants::ERROR_TCPIP_NOTCONNECTED:
-      return CanReturnCode::NOT_CONNECTED;
-    case AnagateConstants::ERROR_TCPIP_TIMEOUT:
-      return CanReturnCode::TIMEOUT;
-    case AnagateConstants::ERROR_OP_CMD_FAILED:
-    case AnagateConstants::ERROR_TCPIP_CALLNOTALLOWED:
-    case AnagateConstants::ERROR_TCPIP_NOT_INITIALIZED:
-    case AnagateConstants::ERROR_INVALID_CRC:
-    case AnagateConstants::ERROR_INVALID_CONF:
-    case AnagateConstants::ERROR_INVALID_CONF_DATA:
-    case AnagateConstants::ERROR_INVALID_DEVICE_HANDLE:
-    case AnagateConstants::ERROR_INVALID_DEVICE_TYPE:
-      return CanReturnCode::INTERNAL_API_ERROR;
+    case AnagateConstants::errorNone:
+      return CanReturnCode::success;
+    case AnagateConstants::errorOpenMaxConn:
+      return CanReturnCode::too_many_connections;
+    case AnagateConstants::errorTcpipSocket:
+      return CanReturnCode::socket_error;
+    case AnagateConstants::errorTcpipNotConnected:
+      return CanReturnCode::disconnected;
+    case AnagateConstants::errorTcpipTimeout:
+      return CanReturnCode::timeout;
+    case AnagateConstants::errorOpCmdFailed:
+    case AnagateConstants::errorTcpipCallNotAllowed:
+    case AnagateConstants::errorTcpipNotInitialized:
+    case AnagateConstants::errorInvalidCrc:
+    case AnagateConstants::errorInvalidConf:
+    case AnagateConstants::errorInvalidConfData:
+    case AnagateConstants::errorInvalidDeviceHandle:
+    case AnagateConstants::errorInvalidDeviceType:
+      return CanReturnCode::internal_api_error;
     default:
       LOG(Log::ERR, CanLogIt::h) << "Failed to open CAN device: Unknown error";
-      return CanReturnCode::UNKNOWN_OPEN_ERROR;
+      return CanReturnCode::unknown_open_error;
   }
-  return CanReturnCode::UNKNOWN_OPEN_ERROR;
+  return CanReturnCode::unknown_open_error;
 }
 /**
  * @brief Sends a CAN frame to the associated device.
@@ -114,13 +114,13 @@ CanReturnCode CanVendorAnagate::vendor_open() {
  */
 CanReturnCode CanVendorAnagate::vendor_send(const CanFrame &frame) {
   int anagate_flags{0};
-  anagate_flags |= frame.is_extended_id() ? AnagateConstants::EXTENDED_ID : 0;
+  anagate_flags |= frame.is_extended_id() ? AnagateConstants::extendedId : 0;
   anagate_flags |=
-      frame.is_remote_request() ? AnagateConstants::REMOTE_REQUEST : 0;
+      frame.is_remote_request() ? AnagateConstants::remoteRequest : 0;
 
   const int sent_status =
       frame.is_remote_request()
-          ? CANWrite(m_handle, frame.id(), AnagateConstants::empty_message,
+          ? CANWrite(m_handle, frame.id(), AnagateConstants::emptyMessage,
                      frame.length(), anagate_flags)
           : CANWrite(m_handle, frame.id(), frame.message().data(),
                      frame.length(), anagate_flags);
@@ -128,26 +128,26 @@ CanReturnCode CanVendorAnagate::vendor_send(const CanFrame &frame) {
   print_anagate_error(sent_status);
 
   switch (sent_status) {
-    case AnagateConstants::ERROR_NONE:
-      return CanReturnCode::SUCCESS;
-    case AnagateConstants::ERROR_CAN_NACK:
-      return CanReturnCode::CAN_NACK;
+    case AnagateConstants::errorNone:
+      return CanReturnCode::success;
+    case AnagateConstants::errorCanNack:
+      return CanReturnCode::not_ack;
 
-    case AnagateConstants::ERROR_CAN_TX_ERROR:
-      return CanReturnCode::CAN_TX_ERROR;
+    case AnagateConstants::errorCanTxError:
+      return CanReturnCode::tx_error;
 
-    case AnagateConstants::ERROR_CAN_TX_BUF_OVERLOW:
-      return CanReturnCode::CAN_TX_BUFFER_OVERFLOW;
+    case AnagateConstants::errorCanTxBufOverflow:
+      return CanReturnCode::tx_buffer_overflow;
 
-    case AnagateConstants::ERROR_CAN_TX_MLOA:
-      return CanReturnCode::CAN_LOST_ARBITRATION;
+    case AnagateConstants::errorCanTxMloa:
+      return CanReturnCode::lost_arbitration;
 
-    case AnagateConstants::ERROR_CAN_NO_VALID_BAUDRATE:
-      return CanReturnCode::CAN_INVALID_BITRATE;
+    case AnagateConstants::errorCanNoValidBaudrate:
+      return CanReturnCode::invalid_bitrate;
 
     default:
       LOG(Log::ERR, CanLogIt::h) << "Failed to sent frame: Unknown error";
-      return CanReturnCode::UNKNOWN_OPEN_ERROR;
+      return CanReturnCode::unknown_open_error;
   }
 }
 
@@ -300,11 +300,11 @@ CanReturnCode CanVendorAnagate::vendor_close() {
   std::lock_guard<std::mutex> guard(CanVendorAnagate::m_handles_lock);
   CanVendorAnagate::m_handles.erase(m_handle);
   switch (r) {
-    case AnagateConstants::ERROR_NONE:
-      return CanReturnCode::SUCCESS;
+    case AnagateConstants::errorNone:
+      return CanReturnCode::success;
     default:
 
-      return CanReturnCode::UNKNOWN_CLOSE_ERROR;
+      return CanReturnCode::unknown_close_error;
   }
 }
 
@@ -323,7 +323,7 @@ CanReturnCode CanVendorAnagate::vendor_close() {
  * that occur during the communication with the Anagate CAN device.
  */
 void CanVendorAnagate::print_anagate_error(AnaUInt32 r) {
-  if (r != AnagateConstants::ERROR_NONE) {
+  if (r != AnagateConstants::errorNone) {
     std::string error_string{};
     error_string.reserve(100);
     CANErrorMessage(r, error_string.data(), error_string.capacity());
