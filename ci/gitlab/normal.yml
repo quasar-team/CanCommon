@@ -40,6 +40,26 @@ Google Tests on Linux:
   script:
     - ctest --test-dir build
 
+Pytest on Windows:
+  stage: unstagged
+  image: $CI_REGISTRY_IMAGE/win2022-build:latest
+  tags:
+    - win2022-container
+  needs:
+    - Compile on Windows
+  script:
+    - python -m pytest
+
+Pytest on Linux:
+  stage: unstagged
+  tags:
+    - linux-socketcan
+  needs:
+    - Compile on Linux
+  script:
+    - python -m pytest
+
+
 Run Sanity Checks:
   stage: unstagged
   image: $CI_REGISTRY_IMAGE/alma9-build:latest

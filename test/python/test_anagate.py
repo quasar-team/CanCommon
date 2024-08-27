@@ -1,18 +1,18 @@
 from time import sleep
+import platform
 import pytest
 from common import *
 
 DEVICE_ONE = CanDeviceConfiguration()
 DEVICE_ONE.host = "128.141.159.236"
-DEVICE_ONE.bus_number = 0
+DEVICE_ONE.bus_number = 0 if platform.system() == "Linux" else 2
 
 DEVICE_TWO = CanDeviceConfiguration()
 DEVICE_TWO.host = "128.141.159.236"
-DEVICE_TWO.bus_number = 1
+DEVICE_TWO.bus_number = 1 if platform.system() == "Linux" else 3
 
 
 def test_anagate_single_message():
-    print("HELLO")
     received_frames_dev1 = []
     received_frames_dev2 = []
 
