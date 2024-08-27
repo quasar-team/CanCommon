@@ -6,7 +6,7 @@ RUN dnf install -y epel-release &&\
     dnf install -y cmake ninja-build g++ cppcheck nano git git-lfs \
                    python-pip doxygen libsocketcan-devel &&\
     dnf clean all
-RUN pip install pre-commit clang-format
+RUN pip install pre-commit clang-format pytest
 
 RUN echo Triggered at: $(cat /trigger) >> /ISSUE &&\
     echo "*******************" >> /ISSUE &&\

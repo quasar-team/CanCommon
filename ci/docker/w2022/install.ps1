@@ -14,6 +14,8 @@ choco install -y --no-progress ninja
 choco install -y --no-progress visualstudio2022buildtools
 choco install -y --no-progress visualstudio2022-workload-vctools
 
+# Pip dependencies
+refreshenv
+python -m pip install pybind11 pytest
 # Clean up
 choco cache remove
-choco optimize
