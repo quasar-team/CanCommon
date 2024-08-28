@@ -271,7 +271,7 @@ CanDiagnostics CanVendorAnagate::vendor_diagnostics() {
         diagnostics.mode = "LISTEN ONLY";
         break;
       case 3:
-        diagnostics.mode = "OFFILINE";
+        diagnostics.mode = "OFFLINE";
         break;
       default:
         break;
