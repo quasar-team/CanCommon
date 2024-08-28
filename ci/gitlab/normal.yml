@@ -77,4 +77,4 @@ Update Documentation Website:
            -F token=$DOC_TOKEN \
            -F "ref=main" \
            -F "variables[DOCUMENTATION_GENERATION]=true" \
-           https://gitlab.cern.ch/api/v4/projects/190310/trigger/pipeline
+           https://gitlab.cern.ch/api/v4/projects/$CI_PROJECT_ID/trigger/pipeline
