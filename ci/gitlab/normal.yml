@@ -69,9 +69,11 @@ Run Sanity Checks:
 
 Update Documentation Website:
   stage: unstagged
-  variables:
-    DOCUMENTATION_GENERATION: "true"
-  trigger:
-    project: quasar-team/CanCommon
-    branch: main
-    strategy: depend
+  image: $CI_REGISTRY_IMAGE/alma9-build:latest
+  script:
+    - |
+      curl --request POST \
+           --header "PRIVATE-TOKEN: $CI_JOB_TOKEN" \
+           "https://gitlab.cern.ch/api/v4/projects/$CI_PROJECT_ID/pipeline" \
+           --form ref=main \
+           --form variables[DOCUMENTATION_GENERATION]=true
