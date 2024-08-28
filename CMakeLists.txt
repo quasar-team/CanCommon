@@ -48,11 +48,10 @@ if (UNIX)
 else()
     target_link_libraries(CanModuleMain PRIVATE
                             ${anagate_SOURCE_DIR}/lib/AnaGateCanDll64.lib)
-    configure_file (
-        "${anagate_SOURCE_DIR}/lib/AnaGateCan64.dll"
-        "${CMAKE_BINARY_DIR}/$<CONFIG>/AnaGateCan64.dll"
-        COPYONLY
-    )
+    set(ANAGATE_DLL_SRC "${anagate_SOURCE_DIR}/lib/AnaGateCan64.dll")
+    set(ANAGATE_DLL_DST "${CMAKE_BINARY_DIR}/$<CONFIG>/AnaGateCan64.dll")
+
+    file(COPY "${ANAGATE_DLL_SRC}" DESTINATION "${ANAGATE_DLL_DST}")
 endif()
 
 
