@@ -26,6 +26,8 @@ if(pybind11_installed EQUAL 0)
   find_package(pybind11 REQUIRED)
 
   pybind11_add_module(canmodule ${PYTHON_SOURCES})
+
+  set_target_properties(canmodule PROPERTIES BUILD_RPATH "\$ORIGIN")
   target_include_directories(canmodule PRIVATE ${logit_SOURCE_DIR}/include)
   target_link_libraries(canmodule PRIVATE CanModuleMain pybind11::module LogIt ${PYTHON_LIBRARIES})
 endif()
