@@ -66,3 +66,12 @@ Run Sanity Checks:
   script:
     - pip install pre-commit
     - pre-commit run --all-files
+
+Update Documentation Website:
+  stage: unstagged
+  trigger:
+    project: quasar-team/CanCommon
+    branch: main
+    strategy: depend
+    variables:
+      DOCUMENTATION_GENERATION: "true"
