@@ -2,6 +2,11 @@ from time import sleep
 import pytest
 from common import *
 
+pytestmark = pytest.mark.skipif(
+    sys.platform.startswith("win"),
+    reason="This test module is only for Linux environments.",
+)
+
 DEVICE_ONE = CanDeviceConfiguration()
 DEVICE_ONE.bus_name = "vcan0"
 DEVICE_TWO = CanDeviceConfiguration()
