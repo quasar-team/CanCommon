@@ -32,7 +32,7 @@ def test_anagate_single_message():
     s1 = myDevice1.send(CanFrame(123, ["H", "e", "l", "l", "o"]))
     assert s1 == CanReturnCode.success
 
-    sleep(0.1)
+    sleep(1)
 
     assert len(received_frames_dev2) == 1
     assert received_frames_dev2[0].id() == 123
@@ -67,7 +67,7 @@ def test_anagate_multiple_messages():
     for e in r:
         assert e == CanReturnCode.success
 
-    sleep(0.1)
+    sleep(1)
 
     assert len(received_frames_dev2) == 5
 

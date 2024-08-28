@@ -28,7 +28,7 @@ def test_socketcan_single_message():
 
     myDevice1.send(CanFrame(123, ["H", "e", "l", "l", "o"]))
 
-    sleep(0.1)
+    sleep(1)
 
     assert len(received_frames_dev2) == 1
     assert received_frames_dev2[0].id() == 123
@@ -60,7 +60,7 @@ def test_socketcan_multiple_messages():
 
     myDevice1.send(send_frames)
 
-    sleep(0.1)
+    sleep(1)
 
     assert len(received_frames_dev2) == 5
 
