@@ -144,7 +144,6 @@ def test_anagate_diagnostics_device_one():
     assert_diagnostics(diag, DEVICE_ONE.bus_number)
 
 
-
 def test_anagate_diagnostics_device_two():
     myDevice1 = CanDevice.create("anagate", CanDeviceArguments(DEVICE_TWO, None))
     myDevice1.open()
