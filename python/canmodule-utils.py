@@ -99,8 +99,7 @@ def parse_can_frame(can_frame_str):
     return frame
 
 
-# Placeholder functions for you to implement later
-def dump(device):
+def process_device(device):
     configuration = CanDeviceConfiguration()
     if device["vendor"] == "anagate":
         configuration.host = device["host"]
@@ -110,6 +109,11 @@ def dump(device):
     else:
         print(f"Unsupported vendor: {device['vendor']}")
         exit(1)
+    return configuration
+
+
+def dump(device):
+    configuration = process_device(device)
     arguments = CanDeviceArguments(configuration, print)
     can_device = CanDevice.create(device["vendor"], arguments)
     can_device.open()
@@ -132,7 +136,12 @@ def gen(device):
 
 
 def diag(device):
-    pass
+    configuration = process_device(device)
+    arguments = CanDeviceArguments(configuration, None)
+    can_device = CanDevice.create(device["vendor"], arguments)
+    can_device.open()
+    print(can_device.diagnostics())
+    can_device.close()
 
 
 if __name__ == "__main__":
