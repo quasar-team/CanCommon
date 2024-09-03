@@ -5,6 +5,19 @@
 #include <sstream>
 #include <string>
 
+/**
+ * @brief Converts the diagnostic information into a human-readable string
+ * format.
+ *
+ * This function collects various diagnostic information from the CANDiagnostics
+ * object and formats it into a string. The information includes log entries,
+ * name, handle, mode, state, bitrate, connected clients, temperature, uptime,
+ * TCP and CAN statistics, and CAN controller errors.
+ *
+ * @return A string containing the formatted diagnostic information. If no
+ * diagnostic information is available, it returns a message indicating that no
+ * information is available.
+ */
 std::string CanDiagnostics::to_string() const noexcept {
   std::ostringstream oss;
 
@@ -54,6 +67,22 @@ std::string CanDiagnostics::to_string() const noexcept {
   return oss.str();
 }
 
+/**
+ * @brief Overloads the << operator to print the diagnostic information of a
+ * CanDiagnostics object.
+ *
+ * This function calls the to_string() method of the CanDiagnostics object and
+ * outputs the resulting string to the provided output stream. This allows for
+ * convenient and readable printing of diagnostic information.
+ *
+ * @param os The output stream to which the diagnostic information will be
+ * printed.
+ * @param diag The CanDiagnostics object whose diagnostic information will be
+ * printed.
+ *
+ * @return The output stream (os) after the diagnostic information has been
+ * printed.
+ */
 std::ostream &operator<<(std::ostream &os,
                          const CanDiagnostics &diag) noexcept {
   return os << diag.to_string();
