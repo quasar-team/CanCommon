@@ -128,11 +128,37 @@ def dump(device):
 
 
 def send(device, frame):
-    pass
+    can_id = int(frame["can_id"], 16)
+
+    extended_id = False
+    if len(frame["can_id"]) > 3:
+        extended_id = True
+
+    remote_request = False
+    flags = 0
+
+    if "len" in frame.keys():
+        remote_request = True
+        flags |= can_flags.remote_request if remote_request else 0
+        flags |= can_flags.extended_id if extended_id else can_flags.standard_id
+        can_frame = CanFrame(can_id, frame["len"], flags)
+    else:
+        data = [chr(int(byte, 16)) for byte in frame["data"]]
+        flags |= can_flags.extended_id if extended_id else can_flags.standard_id
+        print(f"Data: {data}")
+        print(f"Can ID: {can_id} Data: {data} Flags: {flags}")
+        can_frame = CanFrame(can_id, data, flags)
+
+    configuration = process_device(device)
+    arguments = CanDeviceArguments(configuration, None)
+    can_device = CanDevice.create(device["vendor"], arguments)
+    can_device.open()
+    can_device.send(can_frame)
+    print(f"Sent frame: {can_frame}")
 
 
 def gen(device):
-    pass
+    print("Not implemented yet")
 
 
 def diag(device):
